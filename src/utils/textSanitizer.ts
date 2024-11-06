@@ -9,8 +9,8 @@ export function sanitizeText(content: string): string {
     // Remove itálico e sublinhado Markdown em volta de palavras ou frases (_texto_ ou *texto*)
     content = content.replace(/(_.*?_|\*.*?\*)/g, "");
 
-    // Remove blocos de equação em Markdown ($$ ... $$)
-    content = content.replace(/\$\$[^$]*\$\$/g, "");
+    // Remove delimitadores de bloco de equação ($$), mas mantém o conteúdo da equação
+    content = content.replace(/\$\$/g, "");
 
     return content.trim();
 }

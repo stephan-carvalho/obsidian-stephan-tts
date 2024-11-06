@@ -8,10 +8,17 @@ export class AzureSpeechService {
     private isPlaying = false;
     private isPaused = false;
 
-    constructor(apiKey: string, region: string) {
+    constructor(apiKey: string, region: string, voice: string) {
         this.speechConfig = sdk.SpeechConfig.fromSubscription(apiKey, region);
-        console.log("AzureSpeechService initialized.");
+        this.setVoice(voice); // Define a voz inicial
+        console.log("AzureSpeechService initialized with voice:", voice);
     }
+
+    public setVoice(voice: string) {
+        this.speechConfig.speechSynthesisVoiceName = voice; // Atualiza a voz no SpeechConfig
+        console.log("Voz atualizada para:", voice);
+    }
+
 
     private async fetchAudioBuffer(text: string): Promise<ArrayBuffer> {
         console.log("Fetching audio buffer...");

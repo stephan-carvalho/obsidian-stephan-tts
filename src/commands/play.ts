@@ -1,9 +1,21 @@
+// play.ts
 import { Vault, Workspace, Notice } from 'obsidian';
 import { AzureSpeechService } from '../services/azureSpeech';
 import { sanitizeText } from '../utils/textSanitizer';
+import { StephanTTSSettings } from '../settings';
 
-export function playOrPause(vault: Vault, workspace: Workspace, azureSpeechService: AzureSpeechService, statusBarItem: HTMLElement) {
-    
+export function playOrPause(
+    vault: Vault,
+    workspace: Workspace,
+    azureSpeechService: AzureSpeechService,
+    statusBarItem: HTMLElement,
+    settings: StephanTTSSettings // Adiciona o parâmetro settings
+) {
+    const voice = settings.voice; // Obtenha a voz configurada
+
+    // Atualize a voz no AzureSpeechService
+    azureSpeechService.setVoice(voice);
+
     if (azureSpeechService.getIsPlaying() && !azureSpeechService.getIsPaused()) {
         azureSpeechService.pause();
         statusBarItem.setText("▶️");
