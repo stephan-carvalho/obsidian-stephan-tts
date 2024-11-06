@@ -1,4 +1,3 @@
-// azureSpeech.ts
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 import { Howl } from 'howler';
 
@@ -42,14 +41,14 @@ export class AzureSpeechService {
         });
     }
 
-    public async loadAudio(text: string): Promise<void> {
+    public async loadAudio(text: string, onEndCallback?: () => void): Promise<void> {
         console.log("Loading audio...");
         this.audioBuffer = await this.fetchAudioBuffer(text);
-        this.initializeHowl();
+        this.initializeHowl(onEndCallback); // Passa a callback para ser chamada ao final
         console.log("Audio buffer loaded successfully.");
     }
 
-    private initializeHowl() {
+    private initializeHowl(onEndCallback?: () => void) {
         if (this.audioBuffer) {
             const blob = new Blob([this.audioBuffer], { type: 'audio/wav' });
             const url = URL.createObjectURL(blob);
@@ -66,6 +65,9 @@ export class AzureSpeechService {
                     console.log("Playback ended.");
                     this.isPlaying = false;
                     this.isPaused = false;
+                    if (onEndCallback) {
+                        onEndCallback(); // Chama a função de callback ao final do áudio
+                    }
                 },
                 onpause: () => {
                     console.log("Playback paused.");
@@ -76,13 +78,22 @@ export class AzureSpeechService {
         }
     }
 
-    public async play(text: string): Promise<void> {
+    public async play(text: string, onEndCallback?: () => void): Promise<void> {
         console.log("Attempting to play...");
-        if (!this.sound) {
-            await this.loadAudio(text); // Garante que o áudio é carregado e Howl é inicializado
+        
+        // Limpa o áudio anterior se já houver uma instância de `Howl`
+        if (this.sound) {
+            this.sound.stop();
+            this.sound = null;
+            this.audioBuffer = null;
         }
+
+        // Carrega o novo áudio e inicializa `Howl`
+        await this.loadAudio(text, onEndCallback);
+        
+        // Verifica se `this.sound` foi inicializado e se não está tocando
         if (this.sound && !this.isPlaying) {
-            this.sound.play();
+            (this.sound as Howl).play(); // Type assertion para garantir que `this.sound` é do tipo `Howl`
         } else {
             console.warn("Play called but sound is either not initialized or already playing.");
         }
@@ -91,7 +102,7 @@ export class AzureSpeechService {
     public pause() {
         console.log("Attempting to pause...");
         if (this.sound && this.isPlaying) {
-            this.sound.pause();
+            (this.sound as Howl).pause(); // Type assertion para garantir que `this.sound` é do tipo `Howl`
         } else {
             console.warn("Pause called but either not playing or sound is not initialized.");
         }
@@ -100,7 +111,7 @@ export class AzureSpeechService {
     public resume() {
         console.log("Attempting to resume...");
         if (this.sound && this.isPaused) {
-            this.sound.play();
+            (this.sound as Howl).play(); // Type assertion para garantir que `this.sound` é do tipo `Howl`
         } else {
             console.warn("Resume called but either not paused or sound is not initialized.");
         }
@@ -109,7 +120,7 @@ export class AzureSpeechService {
     public stop() {
         console.log("Stopping playback...");
         if (this.sound) {
-            this.sound.stop();
+            (this.sound as Howl).stop(); // Type assertion para garantir que `this.sound` é do tipo `Howl`
             this.isPlaying = false;
             this.isPaused = false;
         }

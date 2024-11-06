@@ -16,7 +16,10 @@ export function playOrPause(vault: Vault, workspace: Workspace, azureSpeechServi
         if (activeLeaf) {
             vault.read(activeLeaf).then((content) => {
                 if (content.trim()) {
-                    azureSpeechService.play(content);
+                    // Passa uma callback para atualizar o status ao final do áudio
+                    azureSpeechService.play(content, () => {
+                        statusBarItem.setText("▶️"); // Atualiza o botão ao terminar o áudio
+                    });
                     statusBarItem.setText("⏸️");
                 } else {
                     new Notice("A nota está vazia.");
