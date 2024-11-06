@@ -1,0 +1,10 @@
+{
+	"id": "obsidian-stephan-tts",
+	"name": "Stephan TTS",
+	"version": "1.0.0",
+	"minAppVersion": "0.12.0",
+	"description": "Um plugin do Obsidian para texto para fala usando Azure Speech",
+	"author": "Stephan Carvalho",
+	"authorUrl": "https://seusite.com",
+	"isDesktopOnly": false
+}

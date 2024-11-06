@@ -1,0 +1,19 @@
+{
+	"name": "obsidian-stephan-tts",
+	"version": "1.0.0",
+	"main": "main.js",
+	"type": "module",
+	"scripts": {
+		"build": "node esbuild.config.mjs",
+		"watch": "node esbuild.config.mjs development"
+	},
+	"devDependencies": {
+		"@types/howler": "^2.2.12",
+		"builtin-modules": "^4.0.0",
+		"esbuild": "^0.24.0"
+	},
+	"dependencies": {
+		"howler": "^2.2.4",
+		"microsoft-cognitiveservices-speech-sdk": "^1.41.0"
+	}
+}
