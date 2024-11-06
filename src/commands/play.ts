@@ -1,8 +1,9 @@
-// play.ts
 import { Vault, Workspace, Notice } from 'obsidian';
 import { AzureSpeechService } from '../services/azureSpeech';
+import { sanitizeText } from '../utils/textSanitizer';
 
 export function playOrPause(vault: Vault, workspace: Workspace, azureSpeechService: AzureSpeechService, statusBarItem: HTMLElement) {
+    
     if (azureSpeechService.getIsPlaying() && !azureSpeechService.getIsPaused()) {
         azureSpeechService.pause();
         statusBarItem.setText("▶️");
@@ -16,8 +17,11 @@ export function playOrPause(vault: Vault, workspace: Workspace, azureSpeechServi
         if (activeLeaf) {
             vault.read(activeLeaf).then((content) => {
                 if (content.trim()) {
-                    // Passa uma callback para atualizar o status ao final do áudio
-                    azureSpeechService.play(content, () => {
+                    // Limpa o conteúdo usando a função sanitizeText
+                    const cleanedContent = sanitizeText(content);
+
+                    // Passa o conteúdo limpo para o serviço de leitura com callback
+                    azureSpeechService.play(cleanedContent, () => {
                         statusBarItem.setText("▶️"); // Atualiza o botão ao terminar o áudio
                     });
                     statusBarItem.setText("⏸️");
