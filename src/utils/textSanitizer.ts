@@ -1,4 +1,5 @@
-// utils/textSanitizer.ts
+import emojiRegex from 'emoji-regex';
+
 export function sanitizeText(content: string): string {
     // Remove tags HTML
     content = content.replace(/<\/?[^>]+(>|$)/g, "");
@@ -11,6 +12,10 @@ export function sanitizeText(content: string): string {
 
     // Remove delimitadores de bloco de equação ($$), mas mantém o conteúdo da equação
     content = content.replace(/\$\$/g, "");
+
+    // Remove emojis usando emoji-regex
+    const regex = emojiRegex();
+    content = content.replace(regex, "");
 
     return content.trim();
 }
