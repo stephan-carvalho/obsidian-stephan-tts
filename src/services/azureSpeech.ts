@@ -106,6 +106,8 @@ export class AzureSpeechService {
         }
     }
 
+    
+
     public pause() {
         console.log("Attempting to pause...");
         if (this.sound && this.isPlaying) {
